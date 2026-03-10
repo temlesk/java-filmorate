@@ -46,7 +46,7 @@ public class UserHandler {
     }
 
     private void check(User user) {
-        if (user.getEmail().isBlank() && user.getEmail().contains("@")) {
+        if (user.getEmail().isBlank() || (!user.getEmail().contains("@"))) {
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
         }
         if (user.getLogin().isBlank() && user.getLogin().contains(" ")) {
