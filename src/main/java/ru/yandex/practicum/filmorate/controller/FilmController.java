@@ -33,5 +33,4 @@ public class FilmController {
     public List<Film> getAll() {
         return handler.getAll();
     }
-
 }
