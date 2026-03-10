@@ -15,7 +15,8 @@ import java.util.Map;
 public class UserHandler {
     private final Map<Long, User> users = new HashMap<>();
     private Long generatedId = 0L;
-    private final static String SYMBOL_DOG = "@";
+    private final String SYMBOL_DOG = "@";
+
     public List<User> getAll() {
         return new ArrayList<>(users.values());
     }
