@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.controller.handler;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -32,7 +34,8 @@ public class FilmHandler {
     public Film update(@Valid Film film) {
         check(film);
         if (!films.containsKey(film.getId())) {
-            throw new ValidationException("Фильм с id " + film.getId() + " не найден");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Фильм с id " + film.getId() + " не найден");
         }
         films.put(film.getId(), film);
         return film;
