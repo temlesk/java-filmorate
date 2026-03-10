@@ -18,7 +18,7 @@ public class UserController {
     private final UserHandler handlerUser;
 
     @GetMapping
-    public List<User> getAll(){
+    public List<User> getAll() {
         return handlerUser.getAll();
     }
 
