@@ -15,7 +15,6 @@ import java.util.Map;
 public class UserHandler {
     private final Map<Long, User> users = new HashMap<>();
     private Long generatedId = 0L;
-    private final String SYMBOL_DOG = "@";
 
     public List<User> getAll() {
         return new ArrayList<>(users.values());
@@ -48,7 +47,7 @@ public class UserHandler {
 
     private void check(User user) {
         if (user.getEmail().isBlank() && user.getEmail().contains("@")) {
-            throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ " + SYMBOL_DOG);
+            throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
         }
         if (user.getLogin().isBlank() && user.getLogin().contains(" ")) {
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
