@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class Film {
     private Long id;
     private String name;
-    String description;
+    private String description;
     private LocalDate releaseDate;
     private Long duration;
 }
