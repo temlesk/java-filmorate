@@ -10,10 +10,8 @@ public class User {
     private Long id;
     @NotNull
     private String email;
-    @NotNull
     private String login;
     @NotNull
     private String name;
-    @NotNull
     private LocalDate birthday;
 }
