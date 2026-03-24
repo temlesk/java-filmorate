@@ -48,4 +48,6 @@ public class ErrorHandler {
         log.warn("Получен некорректный параметр строки запроса \"{}\"={}", e.getParameterName(), e.getParameterValue());
         return new ErrorResponse("Некорректный параметр строки запроса", e.getMessage());
     }
+
+
 }

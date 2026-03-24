@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.List;
 import java.util.Set;
 
-@RestControllerAdvice
+@RestController
 @Slf4j
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -32,7 +32,6 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.info("Начато добавление юзера {}", user);
-        // конвертация данных
         return userService.create(user);
     }
 
@@ -54,7 +53,7 @@ public class UserController {
         return userService.getFriends(userId);
     }
 
-    @GetMapping("/{userId}" + "{/friends}" + "/{/common}" + "/{otherId}")
+    @GetMapping("/{userId}" + "/{friends}" + "/{common}" + "/{otherId}")
     @ResponseStatus(HttpStatus.OK)
     public Set<User> getCommonFriends(@PathVariable long userId, @PathVariable long otherId) {
         return userService.getCommonFriends(userId, otherId);
@@ -65,5 +64,4 @@ public class UserController {
     public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
         userService.deleteFriend(userId, friendId);
     }
-
 }
