@@ -34,7 +34,7 @@ public class UserService {
 
     public void check(User user) {
         if (user.getLogin().trim().isEmpty()) {
-            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
+            throw new ValidationException("Логин не может быть пустым");
         }
 
         if (Objects.isNull(user.getName()) || user.getName().isEmpty()) {
@@ -44,14 +44,6 @@ public class UserService {
 
     public User get(long userId) {
         return userStorage.get(userId);
-    }
-
-    private void fixName(User user) {
-        String userName = user.getName();
-        if (userName == null || userName.isBlank()) {
-            String userLogin = user.getLogin();
-            user.setName(userLogin);
-        }
     }
 
     public Set<User> getFriends(long userId) {
