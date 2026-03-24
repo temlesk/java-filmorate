@@ -22,8 +22,16 @@ public class UserService {
         return userStorage.getAll();
     }
 
+    private void fixName(User user) {
+        String userName = user.getName();
+        if (userName == null || userName.isBlank()) {
+            String userLogin = user.getLogin();
+            user.setName(userLogin);
+        }
+    }
+
     public User update(@Valid User user) {
-        check(user);
+        fixName(user);
         return userStorage.update(user);
     }
 
