@@ -80,4 +80,5 @@ public class FilmControllerTest {
             throw new RuntimeException("Не открывается файл", exception);
         }
     }
+
 }
