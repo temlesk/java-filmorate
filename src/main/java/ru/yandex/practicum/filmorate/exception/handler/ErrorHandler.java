@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.QueryParameterNotValidException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 @Slf4j
 @RestControllerAdvice
@@ -46,5 +47,17 @@ public class ErrorHandler {
     public ErrorResponse handleQueryParameterNotValid(final QueryParameterNotValidException e) {
         log.warn("Получен некорректный параметр строки запроса \"{}\"={}", e.getParameterName(), e.getParameterValue(), e);
         return new ErrorResponse("Некорректный параметр строки запроса", e.getMessage());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleValidationException(ValidationException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleNotFoundException(NotFoundException e) {
+        return e.getMessage();
     }
 }
