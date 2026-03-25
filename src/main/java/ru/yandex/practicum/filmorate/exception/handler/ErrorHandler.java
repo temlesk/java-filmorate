@@ -16,7 +16,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handle(final RuntimeException e) {
-        log.warn("Произошла непредвиденная ошибка");
+        log.warn("Произошла непредвиденная ошибка", e);
         return new ErrorResponse("Ошибка сервера", "Произошла непредвиденная ошибка на сервере");
     }
 
@@ -24,14 +24,14 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(final NotFoundException e) {
         Long id = e.getId();
-        log.warn("Получен не существующий id={}", id);
+        log.warn("Получен не существующий id={}", id, e);
         return new ErrorResponse("Ресурс не найден", String.format("Ресурса с id=%s не существует", id));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotValid(final MethodArgumentNotValidException e) {
-        log.warn("Произошла ошибка валидации поля");
+        log.warn("Произошла ошибка валидации поля", e);
         FieldError fieldError = e.getFieldError();
         if (fieldError != null) {
             return new ErrorResponse("Некорректное значение параметра",
@@ -44,7 +44,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleQueryParameterNotValid(final QueryParameterNotValidException e) {
-        log.warn("Получен некорректный параметр строки запроса \"{}\"={}", e.getParameterName(), e.getParameterValue());
+        log.warn("Получен некорректный параметр строки запроса \"{}\"={}", e.getParameterName(), e.getParameterValue(), e);
         return new ErrorResponse("Некорректный параметр строки запроса", e.getMessage());
     }
 }

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.strorage.UserStorage;
@@ -31,6 +32,8 @@ public class UserService {
     }
 
     public User update(@Valid User user) {
+        check(user);
+        checkId(user.getId());
         fixName(user);
         return userStorage.update(user);
     }
@@ -38,6 +41,12 @@ public class UserService {
     public User create(@Valid User user) {
         check(user);
         return userStorage.create(user);
+    }
+
+    public void checkId(long id) {
+        if (userStorage.get(id).isEmpty()) {
+            throw new NotFoundException(id);
+        }
     }
 
     public void check(User user) {
@@ -51,7 +60,9 @@ public class UserService {
     }
 
     public User get(long userId) {
-        return userStorage.get(userId);
+        return userStorage
+                .get(userId)
+                .orElseThrow(() -> new NotFoundException(userId));
     }
 
     public Set<User> getFriends(long userId) {
@@ -82,7 +93,6 @@ public class UserService {
         user.addFriend(friendId);
         friend.addFriend(userId);
     }
-
 
     public void deleteFriend(long userId, long friendId) {
         User user = get(userId);

@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.strorage.UserStorage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -42,19 +43,11 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> getAll() {
-        return List.of();
+        return users.values().stream().toList();
     }
 
     @Override
-    public User get(long userId) {
-        checkId(userId);
-        return users.get(userId);
-    }
-
-    @Override
-    public void checkId(long id) {
-        if (!users.containsKey(id)) {
-            throw new NotFoundException(id);
-        }
+    public Optional<User> get(long userId) {
+        return Optional.ofNullable(users.get(userId));
     }
 }

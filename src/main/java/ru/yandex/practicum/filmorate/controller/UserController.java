@@ -35,7 +35,7 @@ public class UserController {
         return userService.create(user);
     }
 
-    @PutMapping("/{userId}" + "/{friends}" + "/{friendId}")
+    @PutMapping("/{userId}/{friends}/{friendId}")
     @ResponseStatus(HttpStatus.OK)
     public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
         userService.addFriend(userId, friendId);
@@ -47,19 +47,19 @@ public class UserController {
         return userService.get(userId);
     }
 
-    @GetMapping("/{userId}" + "/{friends}")
+    @GetMapping("/{userId}/{friends}")
     @ResponseStatus(HttpStatus.OK)
     public Set<User> getFriends(@PathVariable long userId) {
         return userService.getFriends(userId);
     }
 
-    @GetMapping("/{userId}" + "/{friends}" + "/{common}" + "/{otherId}")
+    @GetMapping("/{userId}/{friends}/{common}/{otherId}")
     @ResponseStatus(HttpStatus.OK)
     public Set<User> getCommonFriends(@PathVariable long userId, @PathVariable long otherId) {
         return userService.getCommonFriends(userId, otherId);
     }
 
-    @DeleteMapping("/{userId}" + "/{friends}" + "/{friendId}")
+    @DeleteMapping("/{userId}/{friends}/{friendId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
         userService.deleteFriend(userId, friendId);
