@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.strorage.FilmStorage;
-import ru.yandex.practicum.filmorate.strorage.UserStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
