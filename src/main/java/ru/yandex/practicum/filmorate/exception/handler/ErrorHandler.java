@@ -11,6 +11,8 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.QueryParameterNotValidException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
+import java.util.Map;
+
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
@@ -51,7 +53,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleValidationException(ValidationException e) {
-        return e.getMessage();
+    public Map<String, String> handleValidationException(ValidationException e) {
+        return Map.of("error", e.getMessage());
     }
 }
