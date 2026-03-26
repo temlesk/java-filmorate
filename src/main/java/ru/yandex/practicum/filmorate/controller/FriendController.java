@@ -29,13 +29,13 @@ public class FriendController {
     }
 
     @GetMapping("/common/{otherId}")
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public Set<User> getCommon(@PathVariable long userId, @PathVariable long otherId) {
         return friendService.getCommonFriends(userId, otherId);
     }
 
     @DeleteMapping("/friendId")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public void delete(@PathVariable long userId, @PathVariable long friendId) {
         friendService.deleteFriend(userId, friendId);
     }
