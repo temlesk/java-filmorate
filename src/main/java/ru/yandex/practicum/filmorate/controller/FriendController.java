@@ -17,7 +17,7 @@ public class FriendController {
     private final FriendService friendService;
 
     @PutMapping("/{userId}/{friendId}")
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
         friendService.addFriend(userId, friendId);
     }
