@@ -17,7 +17,7 @@ public class FriendController {
     private final FriendService friendService;
 
     @PutMapping("/{userId}/{friendId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
         friendService.addFriend(userId, friendId);
     }
@@ -29,7 +29,7 @@ public class FriendController {
     }
 
     @GetMapping("/{userId}/common/{otherId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Set<User> getCommonFriends(@PathVariable long userId, @PathVariable long otherId) {
         return friendService.getCommonFriends(userId, otherId);
     }
