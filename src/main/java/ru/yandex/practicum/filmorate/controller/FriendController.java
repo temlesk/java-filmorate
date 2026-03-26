@@ -11,32 +11,32 @@ import java.util.Set;
 
 @RestController
 @Slf4j
-@RequestMapping("/friends")
+@RequestMapping("/users/{userId}/friends")
 @RequiredArgsConstructor
 public class FriendController {
     private final FriendService friendService;
 
-    @PutMapping("/{userId}/{friendId}")
+    @PutMapping("/{friendId}")
     @ResponseStatus(HttpStatus.OK)
-    public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
+    public void add(@PathVariable long userId, @PathVariable long friendId) {
         friendService.addFriend(userId, friendId);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Set<User> getFriends(@PathVariable long userId) {
+    public Set<User> get(@PathVariable long userId) {
         return friendService.getFriends(userId);
     }
 
-    @GetMapping("/{userId}/common/{otherId}")
+    @GetMapping("/common/{otherId}")
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Set<User> getCommonFriends(@PathVariable long userId, @PathVariable long otherId) {
+    public Set<User> getCommon(@PathVariable long userId, @PathVariable long otherId) {
         return friendService.getCommonFriends(userId, otherId);
     }
 
-    @DeleteMapping("/{userId}/{friendId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
+    @DeleteMapping("/friendId")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable long userId, @PathVariable long friendId) {
         friendService.deleteFriend(userId, friendId);
     }
 }
