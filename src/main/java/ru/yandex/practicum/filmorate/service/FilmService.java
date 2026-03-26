@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.strorage.FilmStorage;
@@ -22,7 +23,7 @@ public class FilmService {
         return filmStorage.create(film);
     }
 
-    public void checkDate(@Valid Film film) {
+    private void checkDate(@Valid Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new ValidationException("Некорректная дата релиза фильма");
         }
@@ -42,7 +43,7 @@ public class FilmService {
     }
 
     public void addLike(long filmId, long likerId) {
-        userService.checkId(likerId);
+        checkUsersExist(likerId);
         get(filmId).addLike(likerId);
     }
 
@@ -54,7 +55,13 @@ public class FilmService {
     }
 
     public void deleteLike(long filmId, long likerId) {
-        userService.checkId(likerId);
+        checkUsersExist(likerId);
         get(filmId).deleteLike(likerId);
+    }
+
+    private void checkUsersExist(long id) {
+        if (userService.get(id) == null) {
+            throw new NotFoundException(id);
+        }
     }
 }

@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.strorage.UserStorage;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,13 +40,13 @@ public class UserService {
         return userStorage.create(user);
     }
 
-    public void checkId(long id) {
-        if (userStorage.get(id).isEmpty()) {
+    private void checkId(long id) {
+        if (userStorage.get(id) == null) {
             throw new NotFoundException(id);
         }
     }
 
-    public void check(User user) {
+    private void check(User user) {
         if (user.getLogin().trim().isEmpty()) {
             throw new ValidationException("Логин не может быть пустым");
         }
@@ -60,8 +57,7 @@ public class UserService {
     }
 
     public User get(long userId) {
-        return userStorage
-                .get(userId)
+        return Optional.ofNullable(userStorage.get(userId))
                 .orElseThrow(() -> new NotFoundException(userId));
     }
 
