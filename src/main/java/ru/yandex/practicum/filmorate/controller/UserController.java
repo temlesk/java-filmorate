@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @Slf4j
@@ -35,11 +34,6 @@ public class UserController {
         return userService.create(user);
     }
 
-    @PutMapping("/{userId}/{friends}/{friendId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
-        userService.addFriend(userId, friendId);
-    }
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
@@ -47,21 +41,4 @@ public class UserController {
         return userService.get(userId);
     }
 
-    @GetMapping("/{userId}/{friends}")
-    @ResponseStatus(HttpStatus.OK)
-    public Set<User> getFriends(@PathVariable long userId) {
-        return userService.getFriends(userId);
-    }
-
-    @GetMapping("/{userId}/{friends}/{common}/{otherId}")
-    @ResponseStatus(HttpStatus.OK)
-    public Set<User> getCommonFriends(@PathVariable long userId, @PathVariable long otherId) {
-        return userService.getCommonFriends(userId, otherId);
-    }
-
-    @DeleteMapping("/{userId}/{friends}/{friendId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
-        userService.deleteFriend(userId, friendId);
-    }
 }
