@@ -34,11 +34,9 @@ public class UserController {
         return userService.create(user);
     }
 
-
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public User get(@PathVariable long userId) {
         return userService.get(userId);
     }
-
 }

@@ -31,6 +31,11 @@ public class FriendService {
     public void deleteFriend(long userId, long friendId) {
         User user = get(userId);
         User friend = get(friendId);
+
+        if (!user.getFriends().contains(friendId)) {
+            throw new NotFoundException(friendId);
+        }
+
         user.deleteFriend(friendId);
         friend.deleteFriend(userId);
     }
@@ -56,5 +61,4 @@ public class FriendService {
                 .map(this::get)
                 .collect(Collectors.toSet());
     }
-
 }

@@ -16,26 +16,26 @@ import java.util.Set;
 public class FriendController {
     private final FriendService friendService;
 
-    @PutMapping("/{userId}/{friends}/{friendId}")
-    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/{userId}/{friendId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
         friendService.addFriend(userId, friendId);
     }
 
-    @GetMapping("/{userId}/{friends}")
+    @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public Set<User> getFriends(@PathVariable long userId) {
         return friendService.getFriends(userId);
     }
 
-    @GetMapping("/{userId}/{friends}/{common}/{otherId}")
+    @GetMapping("/{userId}/common/{otherId}")
     @ResponseStatus(HttpStatus.OK)
     public Set<User> getCommonFriends(@PathVariable long userId, @PathVariable long otherId) {
         return friendService.getCommonFriends(userId, otherId);
     }
 
-    @DeleteMapping("/{userId}/{friends}/{friendId}")
-    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{userId}/{friendId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
         friendService.deleteFriend(userId, friendId);
     }
