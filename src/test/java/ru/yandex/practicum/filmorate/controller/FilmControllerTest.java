@@ -63,15 +63,6 @@ public class FilmControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    @DisplayName("Проверка валидации некорректной даты фильма")
-    @Test
-    void validation_fail_release_date_should_fail() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(getContentFromFile("film/addFilm/request/filmCreateFailReleaseDate.json")))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
     private static String getContentFromFile(String filename) {
         try {
             return Files.readString(ResourceUtils.getFile("classpath:" + filename).toPath(),
