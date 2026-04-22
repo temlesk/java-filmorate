@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RatingStorage {
+
     List<Rating> getAll();
+
     Optional<Rating> getById(int id);
 }
