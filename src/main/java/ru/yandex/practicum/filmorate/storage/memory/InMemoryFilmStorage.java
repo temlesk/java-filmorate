@@ -52,4 +52,23 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Optional<Film> getById(long id) {
         return Optional.empty();
     }
+
+    @Override
+    public void delete(long id) {
+        if (films.remove(id) == null) {
+            log.error("Фильм с id {} не найден для удаления", id);
+            throw new NotFoundException("Фильма с id = " + id + " не существует");
+        }
+        log.info("Фильм с id {} удален", id);
+    }
+
+    @Override
+    public void addLike(long filmId, long userId) {
+        throw new UnsupportedOperationException("InMemoryFilmStorage не поддерживает лайки");
+    }
+
+    @Override
+    public void removeLike(long filmId, long userId) {
+        throw new UnsupportedOperationException("InMemoryFilmStorage не поддерживает лайки");
+    }
 }
