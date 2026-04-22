@@ -31,10 +31,12 @@ create table if not exists film_genres (
 );
 
 create table if not exists friendships (
-    user_id bigint auto_increment primary key not null ,
-    friend_id bigint auto_increment primary key not null,
+    user_id bigint auto_increment not null ,
+    friend_id bigint auto_increment not null,
     confirmed boolean default false,
-    foreign key (user_id) references users(user_id)
+    primary key (user_id, friend_id),
+    foreign key (user_id) references users(user_id),
+    foreign key (friend_id) references users(user_id)
 );
 
 create table if not exists film_likes (
