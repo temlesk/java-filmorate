@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.QueryParameterNotValidException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
@@ -22,14 +21,6 @@ public class ErrorHandler {
         log.warn("Произошла непредвиденная ошибка", e);
         return new ErrorResponse("Ошибка сервера", "Произошла непредвиденная ошибка на сервере");
     }
-
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public ErrorResponse handleNotFound(final NotFoundException e) {
-//        Long id = e.getId();
-//        log.warn("Получен не существующий id={}", id, e);
-//        return new ErrorResponse("Ресурс не найден", String.format("Ресурса с id=%s не существует", id));
-//    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
