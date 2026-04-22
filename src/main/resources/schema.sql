@@ -52,7 +52,7 @@ values ( 1,'admintema.leshkin@gmail.com', 'temlesk', 'Tema', '2005-05-14'),
 
 insert into films (id, name, description, release_date, duration)
 values ( 1, 'Terminator', 'XZ', '2005-05-14', 60),
-       (2, 'Java', 'db', 2025-22-04, '120');
+       (2, 'Java', 'db', '2025-04-22', '120');
 
 insert into rating (rating_id, rating_name, rating_description)
 values (1, 'G', 'Все возрастные группы допущены. Материал подходит для детей.'),
