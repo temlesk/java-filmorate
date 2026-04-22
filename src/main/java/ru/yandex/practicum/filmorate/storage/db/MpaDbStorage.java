@@ -17,12 +17,8 @@ public class MpaDbStorage implements MpaStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Mpa> mpaRowMapper = (rs, rowNum) -> {
-        Mpa mpa = new Mpa();
-        mpa.setId(rs.getInt("id"));
-        mpa.setName(rs.getString("name"));
-        return mpa;
-    };
+    private final RowMapper<Mpa> mpaRowMapper = (rs, rowNum) ->
+        new Mpa(rs.getInt("id"), rs.getString("name"));
 
     @Override
     public List<Mpa> getAll() {

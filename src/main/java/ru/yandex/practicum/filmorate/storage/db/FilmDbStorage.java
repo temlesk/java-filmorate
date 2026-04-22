@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -23,11 +24,11 @@ import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
+@Primary
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final FilmMapper filmMapper;
-    private final MpaMapper mpaMapper;
     private final GenreMapper genreMapper;
 
     @Override
@@ -77,8 +78,9 @@ public class FilmDbStorage implements FilmStorage {
     public Film get(long filmId) {
         String sql = "SELECT * FROM films WHERE id = ?";
         List<Film> films = jdbcTemplate.query(sql, filmMapper, filmId);
-        if (films.isEmpty()) throw new NotFoundException("Film not found");
-        Film film = films.get(0);
+        if (films.isEmpty())
+            throw new NotFoundException("Фильм с id = \" + filmId + \" не найден");
+        Film film = films.getFirst();
         loadMpa(film);
         loadGenres(film);
         return film;
@@ -95,9 +97,11 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void loadMpa(Film film) {
-        String sql = "SELECT r.id, r.name FROM ratings r JOIN films f ON f.rating_id = r.id WHERE f.id = ?";
-        List<Mpa> mpas = jdbcTemplate.query(sql, mpaMapper, film.getId());
-        if (!mpas.isEmpty()) film.setMpa(mpas.getFirst());
+        String sql = "SELECT r.id, r.name FROM rating r JOIN films f ON f.rating_id = r.id WHERE f.id = ?";
+        List<Mpa> result = jdbcTemplate.query(sql, (rs, rowNum) ->
+                new Mpa(rs.getInt("id"), rs.getString("name")), film.getId());
+        Mpa mpa = result.isEmpty() ? null : result.get(0);
+        film.setMpa(mpa);
     }
 
     private void loadGenres(Film film) {

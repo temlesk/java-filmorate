@@ -6,4 +6,9 @@ import lombok.Data;
 public class Mpa {
     private int id;
     private String name;
+
+    public Mpa(int id, String name) {
+        this.name = name;
+        this.id = id;
+    }
 }
