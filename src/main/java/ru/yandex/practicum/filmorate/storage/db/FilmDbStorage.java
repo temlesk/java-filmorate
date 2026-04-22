@@ -38,7 +38,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
-        String sql = "INSERT INTO films (name, description, release_date, duration, rating) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO films (name, description, release_date, duration, rating_id) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -49,7 +49,8 @@ public class FilmDbStorage implements FilmStorage {
             ps.setLong(4, film.getDuration());
             ps.setObject(5, film.getRating() != null ? film.getRating().getId() : null);
             return ps;
-        }, keyHolder);
+        },
+                keyHolder);
 
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         film.setId(id);
