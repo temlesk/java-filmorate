@@ -16,7 +16,7 @@ public interface UserStorage {
 
     User get(long userId);
 
-    Optional<User> findUserById (long userId);
+    Optional<User> findUserById(long userId);
 
     void deleteUser(long userId);
 }
