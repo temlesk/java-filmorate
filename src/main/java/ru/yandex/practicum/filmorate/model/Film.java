@@ -21,6 +21,7 @@ import java.util.Set;
 public class Film {
     private Set<Genre> genres;
     private Rating rating;
+    private Mpa mpa;
 
     private Long id;
 
