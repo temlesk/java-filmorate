@@ -13,10 +13,10 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.featuresFilm.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.Types;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,41 +29,38 @@ public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final FilmMapper filmMapper;
-    private final GenreStorage genreStorage;
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmMapper filmMapper, GenreStorage genreStorage) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmMapper filmMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.filmMapper = filmMapper;
-        this.genreStorage = genreStorage;
     }
 
-    @Override
     public Film create(Film film) {
         String sql = "INSERT INTO films (name, description, release_date, duration, rating_id) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, film.getName());
             ps.setString(2, film.getDescription());
-            ps.setDate(3, java.sql.Date.valueOf(film.getReleaseDate()));
+            ps.setDate(3, Date.valueOf(film.getReleaseDate()));
             ps.setLong(4, film.getDuration());
-            ps.setObject(5, film.getRating() != null ? film.getRating().getId() : null);
+            if (film.getMpa() != null) {
+                ps.setInt(5, film.getMpa().getId());
+            } else {
+                ps.setNull(5, Types.INTEGER);
+            }
             return ps;
-        },
-                keyHolder);
-
+        }, keyHolder);
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         film.setId(id);
-
         if (film.getGenres() != null && !film.getGenres().isEmpty()) {
-            List<Integer> genreIds = film.getGenres().stream()
-                    .map(Genre::getId)
+            String genreSql = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
+            List<Object[]> batch = film.getGenres().stream()
+                    .map(g -> new Object[]{id, g.getId()})
                     .collect(Collectors.toList());
-            genreStorage.addGenresToFilm(id, genreIds);
+            jdbcTemplate.batchUpdate(genreSql, batch);
         }
-
         return film;
     }
 
@@ -109,7 +106,6 @@ public class FilmDbStorage implements FilmStorage {
             film.setDescription(rs.getString("description"));
             film.setReleaseDate(rs.getDate("release_date").toLocalDate());
             film.setDuration(rs.getLong("duration"));
-            // Mpa
             int ratingId = rs.getInt("rating_id");
             if (!rs.wasNull()) {
                 Mpa mpa = new Mpa(ratingId, rs.getString("rating_name"));
@@ -125,5 +121,24 @@ public class FilmDbStorage implements FilmStorage {
                 new Genre(rs.getInt("id"), rs.getString("name")), id);
         film.setGenres(genres);
         return Optional.of(film);
+    }
+
+    @Override
+    public void delete(long id) {
+        jdbcTemplate.update("DELETE FROM film_genres WHERE film_id = ?", id);
+        jdbcTemplate.update("DELETE FROM film_likes WHERE film_id = ?", id);
+        jdbcTemplate.update("DELETE FROM films WHERE id = ?", id);
+    }
+
+    @Override
+    public void addLike(long filmId, long userId) {
+        String sql = "INSERT INTO film_likes (film_id, user_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, filmId, userId);
+    }
+
+    @Override
+    public void removeLike(long filmId, long userId) {
+        String sql = "DELETE FROM film_likes WHERE film_id = ? AND user_id = ?";
+        jdbcTemplate.update(sql, filmId, userId);
     }
 }
