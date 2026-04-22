@@ -10,6 +10,4 @@ public interface GenreStorage {
     List<Genre> getAll();
 
     Optional<Genre> getById(int id);
-
-    void addGenresToFilm(long filmId, List<Integer> genreIds);
 }

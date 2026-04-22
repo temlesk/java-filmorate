@@ -1,12 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,20 +17,23 @@ public class MpaDbStorage implements MpaStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private final RowMapper<Mpa> mpaRowMapper = (rs, rowNum) -> {
+        Mpa mpa = new Mpa();
+        mpa.setId(rs.getInt("id"));
+        mpa.setName(rs.getString("name"));
+        return mpa;
+    };
+
     @Override
     public List<Mpa> getAll() {
         String sql = "SELECT id, name FROM rating ORDER BY id";
-        return jdbcTemplate.query(sql, this::mapRowToMpa);
+        return jdbcTemplate.query(sql, mpaRowMapper);
     }
 
     @Override
     public Optional<Mpa> getById(int id) {
         String sql = "SELECT id, name FROM rating WHERE id = ?";
-        List<Mpa> result = jdbcTemplate.query(sql, this::mapRowToMpa, id);
+        List<Mpa> result = jdbcTemplate.query(sql, mpaRowMapper, id);
         return result.size() == 1 ? Optional.of(result.getFirst()) : Optional.empty();
-    }
-
-    private Mpa mapRowToMpa(ResultSet rs, int rowNum) throws SQLException {
-        return new Mpa(rs.getInt("id"), rs.getString("name"));
     }
 }

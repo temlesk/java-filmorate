@@ -32,14 +32,4 @@ public class GenreDbStorage implements GenreStorage {
         List<Genre> genres = jdbcTemplate.query(sql, genreMapper, id);
         return genres.stream().findFirst();
     }
-
-    @Override
-    public void addGenresToFilm(long filmId, List<Integer> genreIds) {
-        if (genreIds == null || genreIds.isEmpty()) return;
-
-        String sql = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
-        for (Integer genreId : genreIds) {
-            jdbcTemplate.update(sql, filmId, genreId);
-        }
-    }
 }
