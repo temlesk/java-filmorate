@@ -1,19 +1,24 @@
 package ru.yandex.practicum.filmorate.service;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.strorage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
+
+    @Autowired
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     public List<User> getAll() {
         return userStorage.getAll();
@@ -41,7 +46,7 @@ public class UserService {
 
     private void checkId(long id) {
         if (userStorage.get(id) == null) {
-            throw new NotFoundException(id);
+            throw new NotFoundException("id = " + id + "равен null");
         }
     }
 
@@ -57,6 +62,6 @@ public class UserService {
 
     public User get(long userId) {
         return Optional.ofNullable(userStorage.get(userId))
-                .orElseThrow(() -> new NotFoundException(userId));
+                .orElseThrow(() -> new NotFoundException("Пользователся с id = " + userId + "не сущесвтует."));
     }
 }

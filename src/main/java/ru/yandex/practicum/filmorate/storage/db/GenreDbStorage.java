@@ -1,0 +1,62 @@
+package ru.yandex.practicum.filmorate.storage.db;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.mapper.GenreMapper;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public class GenreDbStorage implements GenreStorage {
+
+    private final JdbcTemplate jdbcTemplate;
+    private final GenreMapper genreMapper;
+
+    public GenreDbStorage(JdbcTemplate jdbcTemplate, GenreMapper genreMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.genreMapper = genreMapper;
+    }
+
+    @Override
+    public List<Genre> getAll() {
+        String sql = "SELECT * FROM genres ORDER BY genre_id";
+        return jdbcTemplate.query(sql, genreMapper);
+    }
+
+    @Override
+    public Optional<Genre> getById(int id) {
+        String sql = "SELECT * FROM genres WHERE genre_id = ?";
+        List<Genre> genres = jdbcTemplate.query(sql, genreMapper, id);
+        return genres.stream().findFirst();
+    }
+
+    @Override
+    public List<Genre> getGenresByFilmId(long filmId) {
+        String sql = """
+            SELECT g.* FROM genres g
+            JOIN film_genres fg ON g.genre_id = fg.genre_id
+            WHERE fg.film_id = ?
+            ORDER BY g.genre_id
+        """;
+        return jdbcTemplate.query(sql, genreMapper, filmId);
+    }
+
+    @Override
+    public void addGenresToFilm(long filmId, List<Integer> genreIds) {
+        if (genreIds == null || genreIds.isEmpty()) return;
+
+        String sql = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
+        for (Integer genreId : genreIds) {
+            jdbcTemplate.update(sql, filmId, genreId);
+        }
+    }
+
+    @Override
+    public void deleteGenresFromFilm(long filmId) {
+        String sql = "DELETE FROM film_genres WHERE film_id = ?";
+        jdbcTemplate.update(sql, filmId);
+    }
+}

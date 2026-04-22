@@ -23,13 +23,13 @@ public class ErrorHandler {
         return new ErrorResponse("Ошибка сервера", "Произошла непредвиденная ошибка на сервере");
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFound(final NotFoundException e) {
-        Long id = e.getId();
-        log.warn("Получен не существующий id={}", id, e);
-        return new ErrorResponse("Ресурс не найден", String.format("Ресурса с id=%s не существует", id));
-    }
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public ErrorResponse handleNotFound(final NotFoundException e) {
+//        Long id = e.getId();
+//        log.warn("Получен не существующий id={}", id, e);
+//        return new ErrorResponse("Ресурс не найден", String.format("Ресурса с id=%s не существует", id));
+//    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
