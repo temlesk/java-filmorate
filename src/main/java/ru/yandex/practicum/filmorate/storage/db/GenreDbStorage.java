@@ -34,17 +34,6 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public List<Genre> getGenresByFilmId(long filmId) {
-        String sql = """
-            SELECT g.* FROM genres g
-            JOIN film_genres fg ON g.genre_id = fg.genre_id
-            WHERE fg.film_id = ?
-            ORDER BY g.genre_id
-        """;
-        return jdbcTemplate.query(sql, genreMapper, filmId);
-    }
-
-    @Override
     public void addGenresToFilm(long filmId, List<Integer> genreIds) {
         if (genreIds == null || genreIds.isEmpty()) return;
 
@@ -52,11 +41,5 @@ public class GenreDbStorage implements GenreStorage {
         for (Integer genreId : genreIds) {
             jdbcTemplate.update(sql, filmId, genreId);
         }
-    }
-
-    @Override
-    public void deleteGenresFromFilm(long filmId) {
-        String sql = "DELETE FROM film_genres WHERE film_id = ?";
-        jdbcTemplate.update(sql, filmId);
     }
 }
