@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.featuresFilm.Rating;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
-    private Set<Genre> genres;
+    private List<Genre> genres;
     private Rating rating;
     private Mpa mpa;
 

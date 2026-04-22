@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.featuresFilm.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
@@ -18,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Primary
@@ -94,5 +96,34 @@ public class FilmDbStorage implements FilmStorage {
             throw new NotFoundException("Фильм с id=" + filmId + " не найден");
         }
         return films.getFirst();
+    }
+
+    @Override
+    public Optional<Film> getById(long id) {
+        String sql = "SELECT f.*, r.id AS rating_id, r.name AS rating_name " +
+                "FROM films f LEFT JOIN rating r ON f.rating_id = r.id WHERE f.id = ?";
+        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Film film = new Film();
+            film.setId(rs.getLong("id"));
+            film.setName(rs.getString("name"));
+            film.setDescription(rs.getString("description"));
+            film.setReleaseDate(rs.getDate("release_date").toLocalDate());
+            film.setDuration(rs.getLong("duration"));
+            // Mpa
+            int ratingId = rs.getInt("rating_id");
+            if (!rs.wasNull()) {
+                Mpa mpa = new Mpa(ratingId, rs.getString("rating_name"));
+                film.setMpa(mpa);
+            }
+            return film;
+        }, id);
+        if (films.isEmpty()) return Optional.empty();
+        Film film = films.getFirst();
+        String genreSql = "SELECT g.id, g.name FROM film_genres fg " +
+                "JOIN genres g ON fg.genre_id = g.id WHERE fg.film_id = ? ORDER BY g.id";
+        List<Genre> genres = jdbcTemplate.query(genreSql, (rs, rowNum) ->
+                new Genre(rs.getInt("id"), rs.getString("name")), id);
+        film.setGenres(genres);
+        return Optional.of(film);
     }
 }
