@@ -8,11 +8,8 @@ public interface FriendStorage {
 
     void addFriend(long userId, long friendId);
 
-    void confirmFriend(long userId, long friendId);
-
     void deleteFriend(long userId, long friendId);
 
     List<User> getFriends(long userId);
 
-    List<User> getPendingRequests(long userId);
 }
