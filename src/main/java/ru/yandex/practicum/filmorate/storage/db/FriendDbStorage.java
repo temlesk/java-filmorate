@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -9,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.FriendStorage;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 public class FriendDbStorage implements FriendStorage {
     private final JdbcTemplate jdbcTemplate;
@@ -28,8 +31,12 @@ public class FriendDbStorage implements FriendStorage {
             throw new NotFoundException("Пользователь не найден");
         }
 
-        String sql = "MERGE INTO friendships (user_id, friend_id, confirmed) KEY(user_id, friend_id) VALUES (?, ?, true)";
-        jdbcTemplate.update(sql, userId, friendId);
+        String sql = "INSERT INTO friendships (user_id, friend_id, confirmed) VALUES (?, ?, true)";
+        try {
+            jdbcTemplate.update(sql, userId, friendId);
+        } catch (DuplicateKeyException e) {
+            log.debug("Дружба уже существует: {} -> {}", userId, friendId);
+        }
     }
 
     @Override
