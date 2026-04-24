@@ -99,7 +99,7 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT r.id, r.name FROM rating r JOIN films f ON f.rating_id = r.id WHERE f.id = ?";
         List<Mpa> result = jdbcTemplate.query(sql, (rs, rowNum) ->
                 new Mpa(rs.getInt("id"), rs.getString("name")), film.getId());
-        Mpa mpa = result.isEmpty() ? null : result.get(0);
+        Mpa mpa = result.isEmpty() ? null : result.getFirst();
         film.setMpa(mpa);
     }
 

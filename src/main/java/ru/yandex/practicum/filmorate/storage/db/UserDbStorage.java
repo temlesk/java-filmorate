@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -69,6 +70,7 @@ public class UserDbStorage implements UserStorage {
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         user.setId(id);
         return user;
+
     }
 
     @Override
@@ -78,7 +80,7 @@ public class UserDbStorage implements UserStorage {
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
-                java.sql.Date.valueOf(user.getBirthday()),
+                Date.valueOf(user.getBirthday()),
                 user.getId());
         if (rows == 0) {
             throw new NotFoundException("Пользователь с id=" + user.getId() + " не найден");
