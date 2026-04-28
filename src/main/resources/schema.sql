@@ -82,7 +82,9 @@ insert into genres (id, name) values
 
 insert into users (email, login, name, birthday) values
     ('admintema.leshkin@gmail.com', 'temlesk', 'Tema', '2005-05-14'),
-    ('usertema.leshkingmail.com', 'userTema', 'Meme', '2000-01-01');
+    ('usertema.leshkingmail.com', 'userTema', 'Meme', '2000-01-01'),
+    ('usertema.leshkingmail1.com', 'userTema1', 'Tema1', '2005-01-01'),
+    ('usertema.leshkingmail2.com', 'userTema2', 'Tema2', '2004-01-01');
 
 insert into films (name, description, release_date, duration, rating_id) values
     ('Terminator', 'XZ', '2005-05-14', 60, 3),

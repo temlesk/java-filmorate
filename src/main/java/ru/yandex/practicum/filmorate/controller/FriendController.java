@@ -14,11 +14,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class FriendController {
     private final FriendService friendService;
-
-    @PutMapping("/{friendId}")
-    public void add(@PathVariable long userId, @PathVariable long friendId) {
-        friendService.addFriend(userId, friendId);
-    }
+//
+//    @PutMapping("/{friendId}")
+//    public void add(@PathVariable long userId, @PathVariable long friendId) {
+//        friendService.addFriend(userId, friendId);
+//    }
 
     @GetMapping
     public Set<User> get(@PathVariable long userId) {

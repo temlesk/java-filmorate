@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Primary
 @Repository
 @Qualifier("userDbStorage")   // уникальное имя для этой реализации
