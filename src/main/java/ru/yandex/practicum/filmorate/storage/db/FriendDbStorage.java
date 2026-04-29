@@ -11,6 +11,8 @@ import ru.yandex.practicum.filmorate.storage.FriendStorage;
 
 import java.util.List;
 
+import static javax.swing.UIManager.get;
+
 @Slf4j
 @Repository
 public class FriendDbStorage implements FriendStorage {
@@ -41,8 +43,15 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public void deleteFriend(long userId, long friendId) {
+        get(userId);
+
+        get(friendId);
+
         String sql = "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?";
-        jdbcTemplate.update(sql, userId, friendId);
+        int rows = jdbcTemplate.update(sql, userId, friendId);
+        if (rows == 0) {
+            throw new NotFoundException("Дружба между " + userId + " и " + friendId + " не найдена");
+        }
     }
 
     @Override
