@@ -80,6 +80,6 @@ public class UserService {
     }
 
     public void deleteFriend(long userId, long friendId) {
-        friendStorage.deleteFriend(userId, friendId);
+        userStorage.deleteFriend(userId, friendId);
     }
 }

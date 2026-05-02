@@ -105,4 +105,13 @@ public class UserDbStorage implements UserStorage {
         }
         return users.getFirst();
     }
+
+    @Override
+    public void deleteFriend(long userId, long friendId) {
+        get(userId);
+        get(friendId);
+
+        String sql = "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?";
+        jdbcTemplate.update(sql, userId, friendId);
+    }
 }
