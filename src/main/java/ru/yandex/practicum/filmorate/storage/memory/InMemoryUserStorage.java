@@ -5,10 +5,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -67,7 +64,11 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void deleteFriend(long userId, long friendId) {
-        // заглушка
         log.info("deleteFriend заглушка для {}, {}", userId, friendId);
+    }
+
+    @Override
+    public List<User> getCommonFriends(long userId, long otherId) {
+        return new ArrayList<>();
     }
 }

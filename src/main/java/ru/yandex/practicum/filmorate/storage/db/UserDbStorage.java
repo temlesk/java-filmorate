@@ -114,4 +114,12 @@ public class UserDbStorage implements UserStorage {
         String sql = "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?";
         jdbcTemplate.update(sql, userId, friendId);
     }
+
+    @Override
+    public List<User> getCommonFriends(long userId, long otherId) {
+        String sql = "SELECT u.* FROM users u " +
+                "JOIN friendships f1 ON u.id = f1.friend_id AND f1.user_id = ? " +
+                "JOIN friendships f2 ON u.id = f2.friend_id AND f2.user_id = ?";
+        return jdbcTemplate.query(sql, userMapper, userId, otherId);
+    }
 }
