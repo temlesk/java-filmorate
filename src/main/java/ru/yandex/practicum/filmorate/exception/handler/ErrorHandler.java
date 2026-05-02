@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -54,5 +55,11 @@ public class ErrorHandler {
     public ErrorResponse handleNotFound(NotFoundException e) {
         log.warn("Объект не найден: {}", e.getMessage());
         return new ErrorResponse("Объект не найден", e.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleDataIntegrity(DataIntegrityViolationException e) {
+        return Map.of("error", "Нарушение целостности данных: " + e.getMostSpecificCause().getMessage());
     }
 }
