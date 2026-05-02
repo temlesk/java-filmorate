@@ -3,12 +3,14 @@ package ru.yandex.practicum.filmorate.storage.memory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
@@ -61,5 +63,11 @@ public class InMemoryUserStorage implements UserStorage {
             throw new RuntimeException("Пользователь с Id " + userId + " не найден");
         }
         users.remove(userId);
+    }
+
+    @Override
+    public void deleteFriend(long userId, long friendId) {
+        // заглушка
+        log.info("deleteFriend заглушка для {}, {}", userId, friendId);
     }
 }
