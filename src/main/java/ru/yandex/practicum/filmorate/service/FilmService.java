@@ -66,7 +66,9 @@ public class FilmService {
 
     public void addLike(long filmId, long likerId) {
         checkUsersExist(likerId);
-        get(filmId).addLike(likerId);
+        Film updateFilm = get(filmId);
+        updateFilm.addLike(likerId);
+        filmStorage.update(updateFilm);
     }
 
     public List<Film> getPopular(int count) {
