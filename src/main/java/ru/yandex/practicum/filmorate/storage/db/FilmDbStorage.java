@@ -78,10 +78,14 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film get(long filmId) {
-        String sql = "SELECT * FROM films WHERE id = ?";
+        String sql = "SELECT f.*, r.name AS mpa_name " +
+                "FROM films f " +
+                "LEFT JOIN rating r ON f.rating_id = r.id " +
+                "WHERE f.id = ?";
+
         List<Film> films = jdbcTemplate.query(sql, filmMapper, filmId);
-        if (films.isEmpty())
-            throw new NotFoundException("Фильм с id = \" + filmId + \" не найден");
+        if (films.isEmpty()) throw new NotFoundException("Фильм не найден");
+
         Film film = films.getFirst();
         loadMpa(film);
         loadGenres(film);
@@ -106,6 +110,7 @@ public class FilmDbStorage implements FilmStorage {
         film.setMpa(mpa);
     }
 
+    // Измени loadGenres, чтобы он не падал на пустых списках
     private void loadGenres(Film film) {
         String sql = "SELECT g.id, g.name FROM genres g " +
                 "JOIN film_genres fg ON g.id = fg.genre_id " +
