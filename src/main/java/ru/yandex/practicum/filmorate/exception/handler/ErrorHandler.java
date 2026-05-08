@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.exception.handler;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -14,52 +13,24 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import java.util.Map;
 
-@Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handle(final RuntimeException e) {
-        log.warn("Произошла непредвиденная ошибка", e);
-        return new ErrorResponse("Ошибка сервера", "Произошла непредвиденная ошибка на сервере");
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNotValid(final MethodArgumentNotValidException e) {
-        log.warn("Произошла ошибка валидации поля", e);
-        FieldError fieldError = e.getFieldError();
-        if (fieldError != null) {
-            return new ErrorResponse("Некорректное значение параметра",
-                    String.format("Значение параметра %s=%s некорректно", fieldError.getField(), fieldError.getRejectedValue()));
-        } else {
-            return new ErrorResponse("Некорректное значение параметра", "");
-        }
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleQueryParameterNotValid(final QueryParameterNotValidException e) {
-        log.warn("Получен некорректный параметр строки запроса \"{}\"={}", e.getParameterName(), e.getParameterValue(), e);
-        return new ErrorResponse("Некорректный параметр строки запроса", e.getMessage());
-    }
-
-    @ExceptionHandler(ValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationException(ValidationException e) {
-        return Map.of("error", e.getMessage());
-    }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFound(NotFoundException e) {
-        log.warn("Объект не найден: {}", e.getMessage());
-        return new ErrorResponse("Объект не найден", e.getMessage());
+    public Map<String, String> handleNotFound(final NotFoundException e) {
+        return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class, DataIntegrityViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleDataIntegrity(DataIntegrityViolationException e) {
-        return Map.of("error", "Нарушение целостности данных: " + e.getMostSpecificCause().getMessage());
+    public Map<String, String> handleBadRequest(final Exception e) {
+        return Map.of("error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleThrowable(final Throwable e) {
+        return Map.of("error", "Произошла непредвиденная ошибка.");
     }
 }
