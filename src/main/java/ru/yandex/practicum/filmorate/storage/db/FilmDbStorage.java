@@ -38,13 +38,12 @@ public class FilmDbStorage implements FilmStorage {
             ps.setDate(3, java.sql.Date.valueOf(film.getReleaseDate()));
             ps.setLong(4, film.getDuration());
             ps.setObject(5, film.getMpa() != null ? film.getMpa().getId() : null);
-
             return ps;
         }, keyHolder);
         long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         film.setId(id);
         updateGenres(id, film.getGenres());
-        return film;
+        return get(id);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getId());
         if (rows == 0) throw new NotFoundException("Film not found");
         updateGenres(film.getId(), film.getGenres());
-        return film;
+        return get(film.getId());
     }
 
     private void updateGenres(long filmId, Set<Genre> genres) {
@@ -78,14 +77,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film get(long filmId) {
-        String sql = "SELECT f.*, r.name AS mpa_name " +
-                "FROM films f " +
-                "LEFT JOIN rating r ON f.rating_id = r.id " +
-                "WHERE f.id = ?";
-
+        String sql = "SELECT * FROM films WHERE id = ?";
         List<Film> films = jdbcTemplate.query(sql, filmMapper, filmId);
         if (films.isEmpty()) throw new NotFoundException("Фильм не найден");
-
         Film film = films.getFirst();
         loadMpa(film);
         loadGenres(film);
@@ -103,14 +97,14 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void loadMpa(Film film) {
-        String sql = "SELECT r.id, r.name FROM rating r JOIN films f ON f.rating_id = r.id WHERE f.id = ?";
+        String sql = "SELECT id, name FROM rating WHERE id = (SELECT rating_id FROM films WHERE id = ?)";
         List<Mpa> result = jdbcTemplate.query(sql, (rs, rowNum) ->
                 new Mpa(rs.getInt("id"), rs.getString("name")), film.getId());
-        Mpa mpa = result.isEmpty() ? null : result.getFirst();
-        film.setMpa(mpa);
+        if (!result.isEmpty()) {
+            film.setMpa(result.getFirst());
+        }
     }
 
-    // Измени loadGenres, чтобы он не падал на пустых списках
     private void loadGenres(Film film) {
         String sql = "SELECT g.id, g.name FROM genres g " +
                 "JOIN film_genres fg ON g.id = fg.genre_id " +
