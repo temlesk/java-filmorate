@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
@@ -37,12 +36,8 @@ public class FilmService {
     }
 
     public List<Film> getPopular(int count) {
-        return filmStorage.getAll().stream()
-                .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getPopular(count);
     }
-
 
     public Film create(@Valid Film film) {
         checkDate(film);

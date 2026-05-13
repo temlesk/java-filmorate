@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -18,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.*;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 @Primary
@@ -134,5 +137,34 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT user_id FROM film_likes WHERE film_id = ?";
         List<Long> likes = jdbcTemplate.queryForList(sql, Long.class, film.getId());
         film.setLikes(new HashSet<>(likes));
+    }
+
+    @Override
+    public void addLike(long filmId, long userId) {
+        get(filmId);
+        String checkUserSql = "SELECT COUNT(*) FROM users WHERE id = ?";
+        Integer userCount = jdbcTemplate.queryForObject(checkUserSql, Integer.class, userId);
+        if (userCount == null || userCount == 0) {
+            throw new NotFoundException("Пользователь с id=" + userId + " не найден");
+        }
+
+        String sql = "INSERT INTO film_likes (film_id, user_id) VALUES (?, ?)";
+        try {
+            jdbcTemplate.update(sql, filmId, userId);
+            log.info("Пользователь {} поставил лайк фильму {}", userId, filmId);
+        } catch (DuplicateKeyException e) {
+            log.debug("Лайк уже существует: фильм {}, пользователь {}", filmId, userId);
+        }
+    }
+
+    @Override
+    public void deleteLike(long filmId, long userId) {
+        String sql = "DELETE FROM film_likes WHERE film_id = ? AND user_id = ?";
+        int rows = jdbcTemplate.update(sql, filmId, userId);
+        if (rows == 0) {
+            log.warn("Лайк не найден: фильм {}, пользователь {}", filmId, userId);
+        } else {
+            log.info("Пользователь {} удалил лайк с фильма {}", userId, filmId);
+        }
     }
 }

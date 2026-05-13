@@ -59,4 +59,18 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .limit(count)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void addLike(long filmId, long userId) {
+        Film film = get(filmId);
+        film.addLike(userId);
+        log.info("Пользователь {} поставил лайк фильму {}", userId, filmId);
+    }
+
+    @Override
+    public void deleteLike(long filmId, long userId) {
+        Film film = get(filmId);
+        film.deleteLike(userId);
+        log.info("Пользователь {} удалил лайк с фильма {}", userId, filmId);
+    }
 }
