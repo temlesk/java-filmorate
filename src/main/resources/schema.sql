@@ -71,14 +71,10 @@ insert into rating (id, name, description) values
 insert into genres (id, name) values
     (1, 'Комедия'),
     (2, 'Драма'),
-    (3, 'Боевик'),
+    (3, 'Мультфильм'),
     (4, 'Триллер'),
-    (5, 'Ужасы'),
-    (6, 'Фантастика'),
-    (7, 'Фэнтези'),
-    (8, 'Мелодрама'),
-    (9, 'Детектив'),
-    (10, 'Приключения');
+    (5, 'Документальный'),
+    (6, 'Боевик');
 
 insert into users (email, login, name, birthday) values
     ('admintema.leshkin@gmail.com', 'temlesk', 'Tema', '2005-05-14'),
