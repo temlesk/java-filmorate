@@ -36,6 +36,10 @@ public class FilmService {
         this.genreStorage = genreStorage;
     }
 
+    public List<Film> getPopular(int count) {
+        return filmStorage.getPopular(count);
+    }
+
     public Film create(@Valid Film film) {
         checkDate(film);
         validateMpa(film.getMpa());
@@ -69,13 +73,6 @@ public class FilmService {
         Film updateFilm = get(filmId);
         updateFilm.addLike(likerId);
         filmStorage.update(updateFilm);
-    }
-
-    public List<Film> getPopular(int count) {
-        return filmStorage.getAll().stream()
-                .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());
     }
 
     public void deleteLike(long filmId, long likerId) {

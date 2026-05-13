@@ -12,4 +12,6 @@ public interface FilmStorage {
     List<Film> getAll();
 
     Film get(long filmId);
+
+    List<Film> getPopular(int count);
 }

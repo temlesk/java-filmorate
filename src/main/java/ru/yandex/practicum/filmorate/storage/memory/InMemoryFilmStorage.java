@@ -47,4 +47,9 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         return films.get(filmId);
     }
+
+    @Override
+    public List<Film> getPopular(int count) {
+        return List.of();
+    }
 }
