@@ -19,6 +19,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -61,6 +62,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getId());
         if (rows == 0) throw new NotFoundException("Film not found");
         updateGenres(film.getId(), film.getGenres());
+        updateLikes(film.getId(), film.getLikes());
         return get(film.getId());
     }
 
@@ -78,6 +80,18 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    private void updateLikes(long filmId, Set<Long> likes) {
+        jdbcTemplate.update("DELETE FROM film_likes WHERE film_id = ?", filmId);
+        if (likes != null && !likes.isEmpty()) {
+            List<Object[]> batchArgs = likes.stream()
+                    .map(userId -> new Object[]{filmId, userId})
+                    .collect(Collectors.toList());
+
+            String sql = "INSERT INTO film_likes (film_id, user_id) VALUES (?, ?)";
+            jdbcTemplate.batchUpdate(sql, batchArgs);
+        }
+    }
+
     @Override
     public Film get(long filmId) {
         String sql = "SELECT * FROM films WHERE id = ?";
@@ -86,6 +100,7 @@ public class FilmDbStorage implements FilmStorage {
         Film film = films.getFirst();
         loadMpa(film);
         loadGenres(film);
+        loadLikes(film);
         return film;
     }
 
@@ -95,6 +110,7 @@ public class FilmDbStorage implements FilmStorage {
         for (Film film : films) {
             loadMpa(film);
             loadGenres(film);
+            loadLikes(film);
         }
         return films;
     }
