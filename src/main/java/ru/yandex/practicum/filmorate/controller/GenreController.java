@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/genres")
 public class GenreController {
-    private final GenreStorage genreStorage;
 
     public GenreController(GenreStorage genreStorage) {
         this.genreStorage = genreStorage;
@@ -29,4 +28,6 @@ public class GenreController {
         return genreStorage.getById(id)
                 .orElseThrow(() -> new NotFoundException("Жанр с id=" + id + " не найден"));
     }
+
+    private final GenreStorage genreStorage;
 }

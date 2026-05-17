@@ -12,25 +12,27 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
-    private final UserService userService;
+    private final UserStorage userStorage;
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
-                       UserService userService,
+                       UserStorage userStorage,
                        MpaStorage mpaStorage,
                        GenreStorage genreStorage) {
         this.filmStorage = filmStorage;
-        this.userService = userService;
+        this.userStorage = userStorage;
         this.mpaStorage = mpaStorage;
         this.genreStorage = genreStorage;
     }
@@ -80,7 +82,7 @@ public class FilmService {
     }
 
     private void checkUsersExist(long id) {
-        if (userService.get(id) == null) {
+        if (userStorage.get(id) == null) {
             throw new NotFoundException("Пользователя с id = " + id + " не существует");
         }
     }
@@ -94,12 +96,20 @@ public class FilmService {
     }
 
     private void validateGenres(Set<Genre> genres) {
-        if (genres != null) {
-            for (Genre genre : genres) {
-                if (genreStorage.getById(genre.getId()).isEmpty()) {
-                    throw new NotFoundException("Жанр с id " + genre.getId() + " не найден");
-                }
-            }
+        if (genres == null || genres.isEmpty()) {
+            return;
+        }
+        Set<Integer> requestIds = genres.stream()
+                .map(Genre::getId)
+                .collect(Collectors.toSet());
+
+        Set<Integer> existingIds = genreStorage.findExistingIds(requestIds);
+        Set<Integer> missingIds = requestIds.stream()
+                .filter(id -> !existingIds.contains(id))
+                .collect(Collectors.toSet());
+
+        if (!missingIds.isEmpty()) {
+            throw new NotFoundException("Жанры с id " + missingIds + " не найдены");
         }
     }
 }
