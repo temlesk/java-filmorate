@@ -4,8 +4,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import ru.yandex.practicum.filmorate.model.featuresFilm.Genre;
-import ru.yandex.practicum.filmorate.model.featuresFilm.Rating;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -20,8 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Film {
     private Set<Genre> genres;
-    private Rating rating;
-
+    private Mpa mpa;
     private Long id;
 
     @NotBlank

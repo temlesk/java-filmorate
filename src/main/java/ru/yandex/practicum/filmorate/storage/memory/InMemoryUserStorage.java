@@ -1,13 +1,13 @@
-package ru.yandex.practicum.filmorate.strorage.memory;
+package ru.yandex.practicum.filmorate.storage.memory;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.strorage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+@Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
@@ -47,5 +47,28 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User get(long userId) {
         return users.get(userId);
+    }
+
+    @Override
+    public Optional<User> findUserById(long userId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void deleteUser(long userId) {
+        if (!users.containsKey(userId)) {
+            throw new RuntimeException("Пользователь с Id " + userId + " не найден");
+        }
+        users.remove(userId);
+    }
+
+    @Override
+    public void deleteFriend(long userId, long friendId) {
+        log.info("deleteFriend заглушка для {}, {}", userId, friendId);
+    }
+
+    @Override
+    public List<User> getCommonFriends(long userId, long otherId) {
+        return new ArrayList<>();
     }
 }
